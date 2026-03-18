@@ -1,0 +1,11 @@
+
+# Dependencies
+node_modules
+
+# JetBrains
+.idea/dataSources.xml
+.idea/conventionalCommit.xml
+.idea/copilot.*
+.idea/copilot*
+
+*/**/.idea
