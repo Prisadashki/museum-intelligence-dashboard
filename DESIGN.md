@@ -1235,7 +1235,7 @@ Related Works
 ### 10.1 Summary Table
 
 | Technique                  | Where                                | Impact                                              |
-|----------------------------|--------------------------------------|-----------------------------------------------------|
+| -------------------------- | ------------------------------------ | --------------------------------------------------- |
 | **Client-side pagination** | Gallery search                       | Only fetch 20 objects at a time, not thousands      |
 | **Parallel fetching**      | `useQueries` in usePaginatedArtworks | All 20 objects fetch simultaneously                 |
 | **Progressive rendering**  | ArtworkGrid                          | Cards appear individually as each resolves          |
@@ -1249,7 +1249,7 @@ Related Works
 ### 10.2 Cache Strategy
 
 | Data                 | Cache Key                 | Stale Time | GC Time |
-|----------------------|---------------------------|------------|---------|
+| -------------------- | ------------------------- | ---------- | ------- |
 | Search results       | `['search', filters]`     | 5 min      | 30 min  |
 | Individual artwork   | `['artwork', id]`         | 10 min     | 30 min  |
 | Departments          | `['departments']`         | 30 min     | 60 min  |
@@ -1441,7 +1441,7 @@ technical challenge.
 Execute in this exact order. Each step builds on the previous.
 
 | Step | What                                                                   | Depends On      | Estimated Effort |
-|------|------------------------------------------------------------------------|-----------------|------------------|
+| ---- | ---------------------------------------------------------------------- | --------------- | ---------------- |
 | 1    | Project scaffold (Vite, deps, configs)                                 | Nothing         | 15 min           |
 | 2    | Types (`types/artwork.ts`, `types/api.ts`)                             | Step 1          | 10 min           |
 | 3    | Utils (`utils/date.ts`, `utils/image.ts`, `utils/constants.ts`)        | Step 2          | 15 min           |
