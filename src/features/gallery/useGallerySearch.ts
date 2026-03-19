@@ -196,5 +196,6 @@ export function useGallerySearch({filters, page}: UseGallerySearchParams) {
         hasNextPage,
         hasPreviousPage: page > 0,
         error: searchQuery.error instanceof Error ? searchQuery.error : null,
+        refetch: searchQuery.refetch,
     };
 }

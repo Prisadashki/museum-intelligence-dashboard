@@ -12,7 +12,7 @@ import {useGalleryFilters} from '@/hooks/useGalleryFilters';
 
 export function GalleryPage() {
     const {filters, page, setPage} = useGalleryFilters();
-    const {artworkSlots, totalResults, totalPages, isSearching, isLoadingArtworks, error} = useGallerySearch({
+    const {artworkSlots, totalResults, totalPages, isSearching, isLoadingArtworks, error, refetch} = useGallerySearch({
         filters,
         page,
     });
@@ -46,7 +46,7 @@ export function GalleryPage() {
                 <ErrorMessage
                     title='Search Error'
                     message={error.message || 'Failed to search artworks. Please try again.'}
-                    onRetry={() => setPage(0)}
+                    onRetry={() => refetch()}
                 />
             ) : isSearching ? (
                 <Box
