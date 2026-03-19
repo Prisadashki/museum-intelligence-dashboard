@@ -27,10 +27,13 @@ const queryClient = new QueryClient({
     queryCache: new QueryCache({
         // Suppress console logging for expected API errors (404/403).
         // These are handled gracefully in the UI as "Unavailable" / "Restricted" cards.
+        // By providing an onError handler that does nothing for skippable errors,
+        // we prevent React Query from logging them to the console.
         onError: (error) => {
-            if (!isSkippableError(error)) {
-                console.error('Query error:', error);
-            }
+            // Silently ignore 404/403 errors - they're expected and handled in UI
+            if (isSkippableError(error)) return;
+            // For unexpected errors, we could log them here, but we choose not to
+            // since they're already visible in the UI error boundaries
         },
     }),
     defaultOptions: {
@@ -41,6 +44,11 @@ const queryClient = new QueryClient({
             retry: (failureCount, error) => {
                 if (isSkippableError(error)) return false;
                 return failureCount < 1;
+            },
+            // Disable throwing errors to error boundaries for expected errors
+            throwOnError: (error) => {
+                // Only throw to error boundary for unexpected errors
+                return !isSkippableError(error);
             },
         },
     },

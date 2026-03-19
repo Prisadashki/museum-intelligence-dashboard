@@ -1,5 +1,5 @@
 import {describe, it, expect, vi, beforeEach} from 'vitest';
-import {renderHook, waitFor} from '@testing-library/react';
+import {renderHook, waitFor, act} from '@testing-library/react';
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 import type {ReactNode} from 'react';
 import {useGallerySearch} from '@/features/gallery/useGallerySearch';
@@ -262,7 +262,9 @@ describe('useGallerySearch', () => {
         // The old IDs [100, 101, 102] should NOT be fetched again
         
         // Give time for any incorrect fetches to start
-        await new Promise(r => setTimeout(r, 50));
+        await act(async () => {
+            await new Promise(r => setTimeout(r, 50));
+        });
         
         // Should not have fetched old IDs
         expect(fetchedIds).not.toContain(100);
@@ -270,7 +272,9 @@ describe('useGallerySearch', () => {
         expect(fetchedIds).not.toContain(102);
 
         // Now resolve the second search
-        resolveSecondSearch!(secondSearchResult);
+        await act(async () => {
+            resolveSecondSearch!(secondSearchResult);
+        });
 
         // Wait for second search and artworks to load
         await waitFor(() => {

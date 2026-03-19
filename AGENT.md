@@ -122,8 +122,10 @@ export const MyComponent = memo(function MyComponent({prop}: MyComponentProps) {
 
 ### Error Handling
 - `ApiError` class with `status` and `url` properties
-- 404 → "unavailable" card, 403 → "restricted" card
+- 404 → "unavailable" card (grey, BlockIcon)
+- 403 → "restricted" card (yellow/warning, LockIcon)
 - `isSkippableError()`, `isNotFoundError()`, `isForbiddenError()` guards
+- Error checks use duck typing (`hasHttpStatus`) as fallback to handle production edge cases where `instanceof` may fail
 
 ## Important Implementation Details
 
@@ -179,6 +181,11 @@ src/__tests__/
 - Cause: Rate limiting from too many concurrent requests
 - Solution: Requests are queued and retried with exponential backoff
 
+### 403 vs 404 on Individual Artworks
+- **404**: Artwork doesn't exist (removed from collection) → Show "Unavailable" card
+- **403**: Rate limiting (NOT restricted access - Met API returns all public objects in search) → Show "Restricted" card
+- Note: In production builds, `instanceof ApiError` may fail across module boundaries. Error checks use duck typing as fallback.
+
 ### Stale Artwork IDs After Filter Change
 - Cause: Race condition between filter change and search completion
 - Solution: `filtersKey` tagging + `isSearchStale` check
@@ -186,6 +193,10 @@ src/__tests__/
 ### Date Range Not Working with Other Filters
 - Cause: Closure capturing stale values
 - Solution: Compute date range INSIDE queryFn, not outside
+
+### Heart Button Not Toggling (Collected State)
+- Cause: Using Zustand's `get().isCollected()` method doesn't trigger re-renders
+- Solution: Select the `collectedIds` Set directly: `useCollectedStore((s) => s.collectedIds)`
 
 ## API Reference
 
