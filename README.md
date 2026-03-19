@@ -2,6 +2,8 @@
 
 A research-oriented dashboard for discovering and analyzing artworks from the Metropolitan Museum of Art.
 
+**Live Demo**: [museum-intelligence-dashboard.vercel.app](https://museum-intelligence-dashboard.vercel.app)
+
 ## Prerequisites
 
 - Node.js >= 20
