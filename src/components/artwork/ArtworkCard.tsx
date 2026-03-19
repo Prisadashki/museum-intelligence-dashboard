@@ -19,9 +19,10 @@ interface ArtworkCardProps {
 }
 
 export const ArtworkCard = memo(function ArtworkCard({artwork}: ArtworkCardProps) {
-    const isCollected = useCollectedStore((s) => s.isCollected);
+    // Select the Set directly so component re-renders when it changes
+    const collectedIds = useCollectedStore((s) => s.collectedIds);
     const toggleCollected = useCollectedStore((s) => s.toggleCollected);
-    const collected = isCollected(artwork.id);
+    const collected = collectedIds.has(artwork.id);
 
     const handleToggleCollected = useCallback(
         (e: React.MouseEvent) => {

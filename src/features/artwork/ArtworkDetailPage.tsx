@@ -40,9 +40,11 @@ export function ArtworkDetailPage() {
     const parsedId = objectId ? parseInt(objectId, 10) : 0;
 
     const {data: artwork, isLoading, error, refetch} = useArtwork(parsedId);
-    const {isCollected, toggleCollected} = useCollectedStore();
+    // Select the Set directly so component re-renders when it changes
+    const collectedIds = useCollectedStore((s) => s.collectedIds);
+    const toggleCollected = useCollectedStore((s) => s.toggleCollected);
 
-    const collected = artwork ? isCollected(artwork.id) : false;
+    const collected = artwork ? collectedIds.has(artwork.id) : false;
 
     return (
         <Layout>
