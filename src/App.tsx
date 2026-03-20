@@ -7,6 +7,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 import {theme} from './theme';
 import {isSkippableError} from '@/utils/errors';
+import {ErrorBoundary} from '@/components/ui/ErrorBoundary';
 
 // Lazy load route components for code splitting
 const GalleryPage = lazy(() => import('@/features/gallery/GalleryPage').then((m) => ({default: m.GalleryPage})));
@@ -62,15 +63,17 @@ function App() {
             <CssBaseline />
             <QueryClientProvider client={queryClient}>
                 <BrowserRouter>
-                    <Suspense fallback={<PageLoader />}>
-                        <Routes>
-                            <Route path='/' element={<Navigate to='/gallery' replace />} />
-                            <Route path='/gallery' element={<GalleryPage />} />
-                            <Route path='/artwork/:objectId' element={<ArtworkDetailPage />} />
-                            <Route path='/collected' element={<CollectedPage />} />
-                            <Route path='*' element={<Navigate to='/gallery' replace />} />
-                        </Routes>
-                    </Suspense>
+                    <ErrorBoundary>
+                        <Suspense fallback={<PageLoader />}>
+                            <Routes>
+                                <Route path='/' element={<Navigate to='/gallery' replace />} />
+                                <Route path='/gallery' element={<GalleryPage />} />
+                                <Route path='/artwork/:objectId' element={<ArtworkDetailPage />} />
+                                <Route path='/collected' element={<CollectedPage />} />
+                                <Route path='*' element={<Navigate to='/gallery' replace />} />
+                            </Routes>
+                        </Suspense>
+                    </ErrorBoundary>
                 </BrowserRouter>
             </QueryClientProvider>
         </ThemeProvider>
