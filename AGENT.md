@@ -102,6 +102,8 @@ npm test             # Run tests once
 npm run test:watch   # Tests in watch mode
 ```
 
+**Important**: Always run `npm run format` before committing to ensure consistent code style.
+
 ## Code Conventions
 
 ### Style
