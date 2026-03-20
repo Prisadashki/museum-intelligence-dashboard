@@ -15,10 +15,7 @@ import {isNotFoundError, isForbiddenError} from './errors';
  * @param ids - Array of artwork IDs corresponding to each query
  * @returns Array of ArtworkSlot objects for rendering
  */
-export function mapQueriesToArtworkSlots(
-    queries: UseQueryResult<Artwork, Error>[],
-    ids: number[],
-): ArtworkSlot[] {
+export function mapQueriesToArtworkSlots(queries: UseQueryResult<Artwork, Error>[], ids: number[]): ArtworkSlot[] {
     return queries.map((q, index) => {
         const id = ids[index]!;
 

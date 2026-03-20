@@ -194,7 +194,7 @@ describe('useGallerySearch', () => {
 
         // First call resolves immediately
         mockSearchObjects.mockResolvedValueOnce(firstSearchResult);
-        
+
         // Track which artwork IDs are fetched
         const fetchedIds: number[] = [];
         mockGetObject.mockImplementation(async (id: number) => {
@@ -220,8 +220,7 @@ describe('useGallerySearch', () => {
 
         // Start with first filters
         const {result, rerender} = renderHook(
-            ({filters, page}: {filters: GalleryFilters; page: number}) => 
-                useGallerySearch({filters, page}),
+            ({filters, page}: {filters: GalleryFilters; page: number}) => useGallerySearch({filters, page}),
             {wrapper, initialProps: {filters: firstFilters, page: 0}},
         );
 
@@ -242,9 +241,10 @@ describe('useGallerySearch', () => {
         // Setup second search - will be slow
         let resolveSecondSearch: (value: typeof secondSearchResult) => void;
         mockSearchObjects.mockImplementationOnce(
-            () => new Promise(resolve => {
-                resolveSecondSearch = resolve;
-            }),
+            () =>
+                new Promise((resolve) => {
+                    resolveSecondSearch = resolve;
+                }),
         );
 
         // Change filters (simulate user selecting a department)
@@ -260,12 +260,12 @@ describe('useGallerySearch', () => {
 
         // At this point, new search is pending
         // The old IDs [100, 101, 102] should NOT be fetched again
-        
+
         // Give time for any incorrect fetches to start
         await act(async () => {
-            await new Promise(r => setTimeout(r, 50));
+            await new Promise((r) => setTimeout(r, 50));
         });
-        
+
         // Should not have fetched old IDs
         expect(fetchedIds).not.toContain(100);
         expect(fetchedIds).not.toContain(101);

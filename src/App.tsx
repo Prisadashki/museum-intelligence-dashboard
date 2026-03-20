@@ -13,7 +13,9 @@ const GalleryPage = lazy(() => import('@/features/gallery/GalleryPage').then((m)
 const ArtworkDetailPage = lazy(() =>
     import('@/features/artwork/ArtworkDetailPage').then((m) => ({default: m.ArtworkDetailPage})),
 );
-const CollectedPage = lazy(() => import('@/features/collected/CollectedPage').then((m) => ({default: m.CollectedPage})));
+const CollectedPage = lazy(() =>
+    import('@/features/collected/CollectedPage').then((m) => ({default: m.CollectedPage})),
+);
 
 function PageLoader() {
     return (
@@ -57,16 +59,16 @@ const queryClient = new QueryClient({
 function App() {
     return (
         <ThemeProvider theme={theme}>
-            <CssBaseline/>
+            <CssBaseline />
             <QueryClientProvider client={queryClient}>
                 <BrowserRouter>
                     <Suspense fallback={<PageLoader />}>
                         <Routes>
-                            <Route path='/' element={<Navigate to='/gallery' replace/>}/>
-                            <Route path='/gallery' element={<GalleryPage/>}/>
-                            <Route path='/artwork/:objectId' element={<ArtworkDetailPage/>}/>
-                            <Route path='/collected' element={<CollectedPage/>}/>
-                            <Route path='*' element={<Navigate to='/gallery' replace/>}/>
+                            <Route path='/' element={<Navigate to='/gallery' replace />} />
+                            <Route path='/gallery' element={<GalleryPage />} />
+                            <Route path='/artwork/:objectId' element={<ArtworkDetailPage />} />
+                            <Route path='/collected' element={<CollectedPage />} />
+                            <Route path='*' element={<Navigate to='/gallery' replace />} />
                         </Routes>
                     </Suspense>
                 </BrowserRouter>

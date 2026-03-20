@@ -27,9 +27,9 @@
 - [ ] **Image zoom/lightbox** - Full-screen image viewing with zoom capability on artwork detail page.
 
 - [ ] **Related works improvements** - Current related works uses same department + artist. Could add:
-  - Related by time period
-  - Related by medium
-  - Related by geographic origin
+    - Related by time period
+    - Related by medium
+    - Related by geographic origin
 
 - [ ] **Search history** - Remember recent searches for quick re-access.
 

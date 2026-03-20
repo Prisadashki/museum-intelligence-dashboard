@@ -114,15 +114,14 @@ export function useGallerySearch({filters, page}: UseGallerySearchParams) {
 
     // Track whether we should enable artwork fetching.
     // Disable when search is loading/fetching OR when data doesn't match current filters.
-    const isSearchStale = searchQuery.isLoading || searchQuery.isFetching || 
+    const isSearchStale =
+        searchQuery.isLoading ||
+        searchQuery.isFetching ||
         (searchQuery.isSuccess && searchQuery.data.filtersKey !== filtersKey);
 
     // Only create artwork queries when search data is fresh.
     // When stale, use an empty array to prevent any fetches.
-    const artworkIdsToFetch = useMemo(
-        () => (isSearchStale ? [] : pageIds),
-        [isSearchStale, pageIds]
-    );
+    const artworkIdsToFetch = useMemo(() => (isSearchStale ? [] : pageIds), [isSearchStale, pageIds]);
 
     // Step 2: Fetch individual artworks for the current page in parallel
     const artworkQueries = useQueries({

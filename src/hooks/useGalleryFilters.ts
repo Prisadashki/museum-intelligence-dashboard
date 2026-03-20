@@ -102,15 +102,15 @@ export function useGalleryFilters() {
                         if (updates.toYear != null) next.set('toYear', String(updates.toYear));
                         else next.delete('toYear');
                     }
-                if (updates.highlightsOnly !== undefined) {
-                    // Only store in URL if true (false is default, keep URL clean)
-                    if (updates.highlightsOnly) next.set('highlights', 'true');
-                    else next.delete('highlights');
-                }
-                if (updates.includeWithoutImages !== undefined) {
-                    if (updates.includeWithoutImages) next.set('noImages', 'true');
-                    else next.delete('noImages');
-                }
+                    if (updates.highlightsOnly !== undefined) {
+                        // Only store in URL if true (false is default, keep URL clean)
+                        if (updates.highlightsOnly) next.set('highlights', 'true');
+                        else next.delete('highlights');
+                    }
+                    if (updates.includeWithoutImages !== undefined) {
+                        if (updates.includeWithoutImages) next.set('noImages', 'true');
+                        else next.delete('noImages');
+                    }
 
                     return next;
                 },

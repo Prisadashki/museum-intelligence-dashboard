@@ -88,7 +88,9 @@ function GalleryFiltersInner({
         filters.query !== '' ||
         filters.departmentId != null ||
         filters.fromYear != null ||
-        filters.toYear != null || filters.highlightsOnly || filters.includeWithoutImages;
+        filters.toYear != null ||
+        filters.highlightsOnly ||
+        filters.includeWithoutImages;
 
     return (
         <Box sx={{display: 'flex', flexDirection: 'column', gap: 2}}>

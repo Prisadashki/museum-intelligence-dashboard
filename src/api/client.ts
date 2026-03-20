@@ -132,15 +132,15 @@ function abortableSleep(ms: number, signal?: AbortSignal): Promise<void> {
         }
 
         const timeoutId = setTimeout(resolve, ms);
-        
+
         // Listen for abort during sleep
         const onAbort = () => {
             clearTimeout(timeoutId);
             reject(new DOMException('Query cancelled', 'AbortError'));
         };
-        
+
         signal?.addEventListener('abort', onAbort, {once: true});
-        
+
         // Clean up the event listener when timeout completes
         setTimeout(() => {
             signal?.removeEventListener('abort', onAbort);
