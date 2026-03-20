@@ -1,3 +1,4 @@
+import {memo, useCallback} from 'react';
 import {Link as RouterLink, useParams} from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
@@ -15,7 +16,7 @@ import {RelatedWorks} from './RelatedWorks';
 import {useArtwork} from '@/hooks/useArtwork';
 import {useCollectedStore} from '@/store/collectedStore';
 
-function DetailSkeleton() {
+const DetailSkeleton = memo(function DetailSkeleton() {
     return (
         <Grid container spacing={4}>
             <Grid size={{xs: 12, lg: 6}}>
@@ -33,9 +34,9 @@ function DetailSkeleton() {
             </Grid>
         </Grid>
     );
-}
+});
 
-export function ArtworkDetailPage() {
+export const ArtworkDetailPage = memo(function ArtworkDetailPage() {
     const {objectId} = useParams<{objectId: string}>();
     const parsedId = objectId ? parseInt(objectId, 10) : 0;
 
@@ -43,6 +44,12 @@ export function ArtworkDetailPage() {
     // Select only the boolean for this specific artwork to avoid unnecessary re-renders
     const collected = useCollectedStore((s) => s.collectedIds.has(parsedId));
     const toggleCollected = useCollectedStore((s) => s.toggleCollected);
+
+    const handleToggleCollected = useCallback(() => {
+        if (artwork) {
+            toggleCollected(artwork.id);
+        }
+    }, [artwork, toggleCollected]);
 
     return (
         <Layout>
@@ -89,7 +96,7 @@ export function ArtworkDetailPage() {
                                 variant={collected ? 'contained' : 'outlined'}
                                 color={collected ? 'error' : 'inherit'}
                                 startIcon={collected ? <FavoriteIcon /> : <FavoriteBorderIcon />}
-                                onClick={() => toggleCollected(artwork.id)}
+                                onClick={handleToggleCollected}
                                 sx={{mt: 3}}
                             >
                                 {collected ? 'Remove from Collection' : 'Add to Collection'}
@@ -110,4 +117,4 @@ export function ArtworkDetailPage() {
             )}
         </Layout>
     );
-}
+});

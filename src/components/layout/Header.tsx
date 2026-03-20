@@ -1,3 +1,4 @@
+import {memo} from 'react';
 import {Link as RouterLink} from 'react-router-dom';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
@@ -10,7 +11,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import MuseumIcon from '@mui/icons-material/Museum';
 import {useCollectedStore} from '@/store/collectedStore';
 
-export function Header() {
+export const Header = memo(function Header() {
     const collectedCount = useCollectedStore((s) => s.collectedIds.size);
 
     return (
@@ -75,4 +76,4 @@ export function Header() {
             </Container>
         </AppBar>
     );
-}
+});

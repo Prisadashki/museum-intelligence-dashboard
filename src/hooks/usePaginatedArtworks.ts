@@ -1,7 +1,5 @@
 import {useQueries} from '@tanstack/react-query';
-import {getObject} from '@/api/endpoints';
-import {transformRawObject} from '@/transformers/artwork';
-import {artworkQueryOptions} from '@/utils/queryConfig';
+import {createArtworkQuery} from '@/utils/queryConfig';
 import {isSkippableError} from '@/utils/errors';
 import type {Artwork} from '@/types/artwork';
 
@@ -12,15 +10,7 @@ interface UsePaginatedArtworksParams {
 
 export function usePaginatedArtworks({objectIds, enabled = true}: UsePaginatedArtworksParams) {
     const queries = useQueries({
-        queries: objectIds.map((id) => ({
-            queryKey: ['artwork', id] as const,
-            queryFn: async () => {
-                const raw = await getObject(id);
-                return transformRawObject(raw);
-            },
-            enabled,
-            ...artworkQueryOptions,
-        })),
+        queries: objectIds.map((id) => createArtworkQuery(id, enabled)),
     });
 
     // Filter out skippable errors (404/403), only include successful loads

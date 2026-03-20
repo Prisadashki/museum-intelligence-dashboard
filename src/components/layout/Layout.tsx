@@ -1,3 +1,4 @@
+import {memo} from 'react';
 import type {ReactNode} from 'react';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
@@ -7,7 +8,7 @@ interface LayoutProps {
     children: ReactNode;
 }
 
-export function Layout({children}: LayoutProps) {
+export const Layout = memo(function Layout({children}: LayoutProps) {
     return (
         <Box sx={{minHeight: '100vh', bgcolor: 'background.default'}}>
             <Header />
@@ -16,4 +17,4 @@ export function Layout({children}: LayoutProps) {
             </Container>
         </Box>
     );
-}
+});

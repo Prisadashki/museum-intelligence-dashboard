@@ -1,4 +1,4 @@
-import {useCallback} from 'react';
+import {memo, useCallback} from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -10,7 +10,7 @@ import {GalleryFilters} from './GalleryFilters';
 import {useGallerySearch} from './useGallerySearch';
 import {useGalleryFilters} from '@/hooks/useGalleryFilters';
 
-export function GalleryPage() {
+export const GalleryPage = memo(function GalleryPage() {
     const {filters, page, setPage} = useGalleryFilters();
     const {artworkSlots, totalResults, totalPages, isSearching, isLoadingArtworks, error, refetch} = useGallerySearch({
         filters,
@@ -76,4 +76,4 @@ export function GalleryPage() {
             )}
         </Layout>
     );
-}
+});

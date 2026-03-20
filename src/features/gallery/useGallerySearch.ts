@@ -11,17 +11,9 @@ import {
     EARLIEST_DATE,
     CURRENT_YEAR,
 } from '@/utils/constants';
-import {artworkRetry} from '@/utils/queryConfig';
+import {createArtworkQuery} from '@/utils/queryConfig';
 import {mapQueriesToArtworkSlots} from '@/utils/artworkSlots';
 import type {GalleryFilters} from '@/types/artwork';
-
-/**
- * Creates a stable string key from filters for comparison.
- * Used to detect when filters have changed between renders.
- */
-function getFiltersKey(filters: GalleryFilters): string {
-    return JSON.stringify(filters);
-}
 
 interface UseGallerySearchParams {
     filters: GalleryFilters;
@@ -42,8 +34,8 @@ interface TaggedSearchResult {
 export function useGallerySearch({filters, page}: UseGallerySearchParams) {
     const queryClient = useQueryClient();
 
-    // Create a stable key for the current filters
-    const filtersKey = getFiltersKey(filters);
+    // Create a stable key for the current filters - memoized to avoid recomputation
+    const filtersKey = useMemo(() => JSON.stringify(filters), [filters]);
 
     // Step 1: Search for object IDs
     // By default, we request hasImages=true for consistent results.
@@ -124,16 +116,12 @@ export function useGallerySearch({filters, page}: UseGallerySearchParams) {
     const artworkIdsToFetch = useMemo(() => (isSearchStale ? [] : pageIds), [isSearchStale, pageIds]);
 
     // Step 2: Fetch individual artworks for the current page in parallel
+    // Use the factory function to create stable query configs
     const artworkQueries = useQueries({
         queries: artworkIdsToFetch.map((id) => ({
-            queryKey: ['artwork', id] as const,
-            queryFn: async ({signal}) => {
-                const raw = await getObject(id, {signal});
-                return transformRawObject(raw);
-            },
+            ...createArtworkQuery(id),
             staleTime: ARTWORK_STALE_TIME,
             gcTime: ARTWORK_GC_TIME,
-            retry: artworkRetry,
         })),
     });
 

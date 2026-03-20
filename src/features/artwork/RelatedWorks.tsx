@@ -1,3 +1,4 @@
+import {memo} from 'react';
 import {Link as RouterLink} from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -16,7 +17,7 @@ interface RelatedWorksProps {
     artwork: Artwork;
 }
 
-function RelatedCardSkeleton() {
+const RelatedCardSkeleton = memo(function RelatedCardSkeleton() {
     return (
         <Card sx={{width: 200, flexShrink: 0}}>
             <Skeleton variant='rectangular' sx={{aspectRatio: '4/3'}} />
@@ -26,13 +27,13 @@ function RelatedCardSkeleton() {
             </CardContent>
         </Card>
     );
-}
+});
 
 interface RelatedCardProps {
     artwork: Artwork;
 }
 
-function RelatedCard({artwork}: RelatedCardProps) {
+const RelatedCard = memo(function RelatedCard({artwork}: RelatedCardProps) {
     return (
         <Card
             sx={{
@@ -71,9 +72,9 @@ function RelatedCard({artwork}: RelatedCardProps) {
             </CardActionArea>
         </Card>
     );
-}
+});
 
-export function RelatedWorks({artwork}: RelatedWorksProps) {
+export const RelatedWorks = memo(function RelatedWorks({artwork}: RelatedWorksProps) {
     const {relatedArtworks, isLoading, totalFound} = useRelatedWorks(artwork);
 
     return (
@@ -131,4 +132,4 @@ export function RelatedWorks({artwork}: RelatedWorksProps) {
             )}
         </Box>
     );
-}
+});

@@ -1,3 +1,4 @@
+import {memo} from 'react';
 import type {ReactNode} from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -18,7 +19,7 @@ interface MetaRowProps {
     value: string | null | ReactNode;
 }
 
-function MetaRow({label, value}: MetaRowProps) {
+const MetaRow = memo(function MetaRow({label, value}: MetaRowProps) {
     if (value == null) return null;
 
     return (
@@ -39,9 +40,9 @@ function MetaRow({label, value}: MetaRowProps) {
             <TableCell sx={{pr: 0}}>{value}</TableCell>
         </TableRow>
     );
-}
+});
 
-export function ArtworkMeta({artwork}: ArtworkMetaProps) {
+export const ArtworkMeta = memo(function ArtworkMeta({artwork}: ArtworkMetaProps) {
     return (
         <Box>
             {/* Title and Artist */}
@@ -91,4 +92,4 @@ export function ArtworkMeta({artwork}: ArtworkMetaProps) {
             )}
         </Box>
     );
-}
+});

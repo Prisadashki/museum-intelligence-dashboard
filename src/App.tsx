@@ -1,4 +1,4 @@
-import {lazy, Suspense} from 'react';
+import {lazy, Suspense, memo} from 'react';
 import {BrowserRouter, Routes, Route, Navigate} from 'react-router-dom';
 import {QueryClient, QueryClientProvider, QueryCache} from '@tanstack/react-query';
 import {ThemeProvider} from '@mui/material/styles';
@@ -18,13 +18,13 @@ const CollectedPage = lazy(() =>
     import('@/features/collected/CollectedPage').then((m) => ({default: m.CollectedPage})),
 );
 
-function PageLoader() {
+const PageLoader = memo(function PageLoader() {
     return (
         <Box sx={{display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '50vh'}}>
             <CircularProgress />
         </Box>
     );
-}
+});
 
 const queryClient = new QueryClient({
     queryCache: new QueryCache({
@@ -57,27 +57,33 @@ const queryClient = new QueryClient({
     },
 });
 
-function App() {
+/**
+ * Wraps a lazy-loaded route with ErrorBoundary and Suspense.
+ * This ensures chunk loading failures are caught and displayed gracefully.
+ */
+function LazyRoute({element}: {element: React.ReactNode}) {
+    return (
+        <ErrorBoundary>
+            <Suspense fallback={<PageLoader />}>{element}</Suspense>
+        </ErrorBoundary>
+    );
+}
+
+export function App() {
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
             <QueryClientProvider client={queryClient}>
                 <BrowserRouter>
-                    <ErrorBoundary>
-                        <Suspense fallback={<PageLoader />}>
-                            <Routes>
-                                <Route path='/' element={<Navigate to='/gallery' replace />} />
-                                <Route path='/gallery' element={<GalleryPage />} />
-                                <Route path='/artwork/:objectId' element={<ArtworkDetailPage />} />
-                                <Route path='/collected' element={<CollectedPage />} />
-                                <Route path='*' element={<Navigate to='/gallery' replace />} />
-                            </Routes>
-                        </Suspense>
-                    </ErrorBoundary>
+                    <Routes>
+                        <Route path='/' element={<Navigate to='/gallery' replace />} />
+                        <Route path='/gallery' element={<LazyRoute element={<GalleryPage />} />} />
+                        <Route path='/artwork/:objectId' element={<LazyRoute element={<ArtworkDetailPage />} />} />
+                        <Route path='/collected' element={<LazyRoute element={<CollectedPage />} />} />
+                        <Route path='*' element={<Navigate to='/gallery' replace />} />
+                    </Routes>
                 </BrowserRouter>
             </QueryClientProvider>
         </ThemeProvider>
     );
 }
-
-export default App;

@@ -1,3 +1,4 @@
+import {memo} from 'react';
 import Box from '@mui/material/Box';
 import Pagination from '@mui/material/Pagination';
 import Typography from '@mui/material/Typography';
@@ -12,7 +13,12 @@ interface PaginationControlsProps {
     isLoading?: boolean;
 }
 
-export function PaginationControls({page, totalPages, onPageChange, isLoading = false}: PaginationControlsProps) {
+export const PaginationControls = memo(function PaginationControls({
+    page,
+    totalPages,
+    onPageChange,
+    isLoading = false,
+}: PaginationControlsProps) {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -48,4 +54,4 @@ export function PaginationControls({page, totalPages, onPageChange, isLoading = 
             </Typography>
         </Box>
     );
-}
+});

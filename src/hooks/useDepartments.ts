@@ -6,8 +6,8 @@ import {DEPARTMENTS_STALE_TIME, DEPARTMENTS_GC_TIME} from '@/utils/constants';
 export function useDepartments() {
     return useQuery({
         queryKey: ['departments'],
-        queryFn: async () => {
-            const raw = await getDepartments();
+        queryFn: async ({signal}) => {
+            const raw = await getDepartments({signal});
             return transformDepartments(raw);
         },
         staleTime: DEPARTMENTS_STALE_TIME,

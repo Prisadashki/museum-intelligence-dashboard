@@ -1,3 +1,4 @@
+import {memo} from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
@@ -9,7 +10,7 @@ interface ErrorMessageProps {
     onRetry?: () => void;
 }
 
-export function ErrorMessage({title = 'Error', message, onRetry}: ErrorMessageProps) {
+export const ErrorMessage = memo(function ErrorMessage({title = 'Error', message, onRetry}: ErrorMessageProps) {
     return (
         <Box sx={{textAlign: 'center', py: 6}}>
             <ErrorOutlineIcon sx={{fontSize: 48, color: 'error.main', mb: 2}} />
@@ -26,4 +27,4 @@ export function ErrorMessage({title = 'Error', message, onRetry}: ErrorMessagePr
             )}
         </Box>
     );
-}
+});

@@ -1,3 +1,5 @@
+import {getObject} from '@/api/endpoints';
+import {transformRawObject} from '@/transformers/artwork';
 import {ARTWORK_STALE_TIME, ARTWORK_GC_TIME} from './constants';
 import {isSkippableError} from './errors';
 
@@ -24,3 +26,19 @@ export const artworkQueryOptions = {
     gcTime: ARTWORK_GC_TIME,
     retry: artworkRetry,
 } as const;
+
+/**
+ * Creates a stable query configuration for fetching a single artwork.
+ * Used by useQueries to avoid recreating query configs on every render.
+ */
+export function createArtworkQuery(id: number, enabled = true) {
+    return {
+        queryKey: ['artwork', id] as const,
+        queryFn: async ({signal}: {signal?: AbortSignal}) => {
+            const raw = await getObject(id, {signal});
+            return transformRawObject(raw);
+        },
+        enabled,
+        ...artworkQueryOptions,
+    };
+}

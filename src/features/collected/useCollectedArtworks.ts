@@ -1,9 +1,7 @@
 import {useMemo} from 'react';
 import {useQueries} from '@tanstack/react-query';
-import {getObject} from '@/api/endpoints';
-import {transformRawObject} from '@/transformers/artwork';
 import {useCollectedStore} from '@/store/collectedStore';
-import {artworkQueryOptions} from '@/utils/queryConfig';
+import {createArtworkQuery} from '@/utils/queryConfig';
 import {mapQueriesToArtworkSlots} from '@/utils/artworkSlots';
 import {isSkippableError} from '@/utils/errors';
 
@@ -19,14 +17,7 @@ export function useCollectedArtworks() {
     const collectedIds = useMemo(() => Array.from(collectedIdsSet), [collectedIdsSet]);
 
     const artworkQueries = useQueries({
-        queries: collectedIds.map((id) => ({
-            queryKey: ['artwork', id] as const,
-            queryFn: async () => {
-                const raw = await getObject(id);
-                return transformRawObject(raw);
-            },
-            ...artworkQueryOptions,
-        })),
+        queries: collectedIds.map((id) => createArtworkQuery(id)),
     });
 
     const artworkSlots = useMemo(
