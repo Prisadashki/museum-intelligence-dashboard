@@ -36,9 +36,10 @@ src/
 │   └── ui/                 # Reusable primitives (ErrorMessage, Pagination, etc.)
 │
 ├── features/               # Feature modules (co-located components + hooks)
-│   ├── artwork/            # Detail page, RelatedWorks
+│   ├── artwork/            # Detail page, RelatedWorks, ArtworkMeta
 │   ├── collected/          # Collected artworks page
 │   └── gallery/            # Main gallery with filters
+│       └── components/     # Filter sub-components (SearchField, DepartmentSelect, etc.)
 │
 ├── hooks/                  # Shared hooks (useArtwork, useDepartments, useGalleryFilters)
 ├── store/                  # Zustand stores (collectedStore with localStorage)
@@ -122,9 +123,29 @@ npm run test:watch   # Tests in watch mode
 
 ```tsx
 export const MyComponent = memo(function MyComponent({prop}: MyComponentProps) {
+    // Use useCallback for event handlers
+    const handleClick = useCallback(() => { ... }, [deps]);
+    // Use useMemo for expensive computations
+    const computed = useMemo(() => expensive(data), [data]);
     // ...
 });
 ```
+
+### Performance Patterns
+
+- **All components wrapped with `memo()`** to prevent unnecessary re-renders
+- **`useCallback`** for all event handlers passed to children
+- **`useMemo`** for expensive computations and derived data
+- **AbortSignal** passed to all `queryFn` for request cancellation
+- **`createArtworkQuery()` factory** in `queryConfig.ts` for stable query configs
+
+### Accessibility
+
+- **Skip link** in Layout for keyboard navigation
+- **`aria-live="polite"`** on loading states for screen reader announcements
+- **`aria-label`** on navigation, pagination, and icon-only buttons
+- **`tabIndex={0}`** on scrollable containers for keyboard access
+- **`getItemAriaLabel`** on pagination for descriptive button labels
 
 ### Error Handling
 
@@ -169,25 +190,32 @@ export const MyComponent = memo(function MyComponent({prop}: MyComponentProps) {
 /api/* → https://collectionapi.metmuseum.org/public/collection/v1/*
 ```
 
-## Testing
-
-### Structure
+### Testing
 
 ```
 src/__tests__/
-├── api/schemas.test.ts           # Zod validation
-├── hooks/useGallerySearch.test.tsx
-├── transformers/artwork.test.ts
-├── utils/date.test.ts
-└── fixtures/                     # Shared test data
+├── api/schemas.test.ts              # Zod validation
+├── hooks/
+│   ├── useGallerySearch.test.tsx    # Search + pagination logic
+│   └── useRelatedWorks.test.tsx     # Related works derivation
+├── transformers/artwork.test.ts     # API → domain transformation
+├── utils/date.test.ts               # Date formatting
+└── fixtures/                        # Shared test data
 ```
 
-### Patterns
+### Test Patterns
 
 - Mock API with `vi.mock('@/api/endpoints')`
 - Wrap hooks with `QueryClientProvider`
 - Use `waitFor` for async assertions
 - Fixtures in `__tests__/fixtures/`
+- When testing hooks that use AbortSignal, expect the options object:
+    ```ts
+    expect(mockFn).toHaveBeenCalledWith(
+        expect.objectContaining({query: 'test'}),
+        expect.objectContaining({signal: expect.any(AbortSignal)}),
+    );
+    ```
 
 ## Common Issues & Solutions
 
@@ -211,6 +239,20 @@ src/__tests__/
 
 - Cause: Closure capturing stale values
 - Solution: Compute date range INSIDE queryFn, not outside
+
+### All Artwork Cards Re-rendering When One Is Collected
+
+- Cause: Components subscribing to entire Zustand store or `collectedIds` Set
+- Solution: Use granular selectors that return primitives:
+
+    ```tsx
+    // BAD: Re-renders on any collection change
+    const collectedIds = useCollectedStore((s) => s.collectedIds);
+    const isCollected = collectedIds.has(id);
+
+    // GOOD: Only re-renders when this specific artwork's status changes
+    const isCollected = useCollectedStore((s) => s.collectedIds.has(id));
+    ```
 
 ### Heart Button Not Toggling (Collected State)
 
@@ -247,3 +289,34 @@ When working on this project, consider loading:
 - `typescript-patterns` - for TypeScript conventions
 - `react-patterns` - for React component patterns
 - `testing-strategy` - when writing tests
+
+## Recent Optimizations Applied
+
+The following performance and quality improvements have been applied:
+
+### Performance
+
+- Added `memo()` to 15+ components to prevent unnecessary re-renders
+- Added AbortSignal to all `queryFn` for proper request cancellation
+- Created `createArtworkQuery()` factory to avoid recreating query configs
+- Memoized `JSON.stringify` call in `useGallerySearch` hot path
+- Fixed store subscription anti-pattern causing all cards to re-render
+
+### Code Quality
+
+- Split `GalleryFilters` into smaller components (`SearchField`, `DepartmentSelect`, `DateRangeFilter`, `FilterCheckbox`)
+- Changed from default exports to named exports for consistency
+- Removed unused `LoadMoreButton` component
+- Removed unused `date-fns` dependency
+- Fixed duplicate `Department` type definition
+
+### Accessibility
+
+- Added skip link for keyboard navigation
+- Added `aria-live` regions for loading states
+- Added `aria-label` to navigation and pagination
+- Made related works carousel keyboard-scrollable
+
+### Error Handling
+
+- Added per-route `ErrorBoundary` via `LazyRoute` wrapper to isolate failures

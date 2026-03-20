@@ -1,11 +1,7 @@
 import {memo, useCallback} from 'react';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
-
-interface Department {
-    id: number;
-    name: string;
-}
+import type {Department} from '@/types/artwork';
 
 interface DepartmentSelectProps {
     value: number | null;

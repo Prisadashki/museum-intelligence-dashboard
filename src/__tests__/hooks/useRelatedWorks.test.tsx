@@ -82,6 +82,9 @@ describe('useRelatedWorks', () => {
             expect.objectContaining({
                 query: 'Sculpture',
             }),
+            expect.objectContaining({
+                signal: expect.any(AbortSignal),
+            }),
         );
     });
 
@@ -104,6 +107,9 @@ describe('useRelatedWorks', () => {
         expect(mockSearchObjects).toHaveBeenCalledWith(
             expect.objectContaining({
                 query: 'Egyptian',
+            }),
+            expect.objectContaining({
+                signal: expect.any(AbortSignal),
             }),
         );
     });
@@ -128,6 +134,9 @@ describe('useRelatedWorks', () => {
             expect.objectContaining({
                 query: 'Tapestry',
             }),
+            expect.objectContaining({
+                signal: expect.any(AbortSignal),
+            }),
         );
     });
 
@@ -151,6 +160,9 @@ describe('useRelatedWorks', () => {
         expect(mockSearchObjects).toHaveBeenCalledWith(
             expect.objectContaining({
                 query: 'European Paintings',
+            }),
+            expect.objectContaining({
+                signal: expect.any(AbortSignal),
             }),
         );
     });
@@ -215,6 +227,9 @@ describe('useRelatedWorks', () => {
                 dateBegin: 1550,
                 dateEnd: 1650,
             }),
+            expect.objectContaining({
+                signal: expect.any(AbortSignal),
+            }),
         );
     });
 
@@ -237,6 +252,9 @@ describe('useRelatedWorks', () => {
             expect.objectContaining({
                 dateBegin: undefined,
                 dateEnd: undefined,
+            }),
+            expect.objectContaining({
+                signal: expect.any(AbortSignal),
             }),
         );
     });

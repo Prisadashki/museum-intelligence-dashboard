@@ -50,6 +50,8 @@ export const GalleryPage = memo(function GalleryPage() {
                 />
             ) : isSearching ? (
                 <Box
+                    role='status'
+                    aria-live='polite'
                     sx={{
                         display: 'flex',
                         flexDirection: 'column',
@@ -58,7 +60,7 @@ export const GalleryPage = memo(function GalleryPage() {
                         py: 10,
                     }}
                 >
-                    <CircularProgress size={48} />
+                    <CircularProgress size={48} aria-hidden='true' />
                     <Typography variant='body1' color='text.secondary'>
                         Loading collection...
                     </Typography>

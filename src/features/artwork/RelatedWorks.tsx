@@ -116,6 +116,9 @@ export const RelatedWorks = memo(function RelatedWorks({artwork}: RelatedWorksPr
                 </Typography>
             ) : (
                 <Box
+                    tabIndex={0}
+                    role='region'
+                    aria-label='Related works carousel'
                     sx={{
                         display: 'flex',
                         gap: 2,
@@ -123,6 +126,11 @@ export const RelatedWorks = memo(function RelatedWorks({artwork}: RelatedWorksPr
                         pb: 2,
                         scrollSnapType: 'x mandatory',
                         '& > *': {scrollSnapAlign: 'start'},
+                        '&:focus': {
+                            outline: '2px solid',
+                            outlineColor: 'primary.main',
+                            outlineOffset: 2,
+                        },
                     }}
                 >
                     {relatedArtworks.map((related) => (

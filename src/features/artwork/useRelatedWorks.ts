@@ -24,14 +24,17 @@ export function useRelatedWorks(artwork: Artwork | undefined) {
     // Step 2: Search for related object IDs
     const searchQuery = useQuery({
         queryKey: ['related-search', artwork?.id, departmentId, searchTerm, yearFrom, yearTo] as const,
-        queryFn: () =>
-            searchObjects({
-                query: searchTerm!,
-                departmentId: departmentId ?? undefined,
-                dateBegin: yearFrom ?? undefined,
-                dateEnd: yearTo ?? undefined,
-                hasImages: true,
-            }),
+        queryFn: ({signal}) =>
+            searchObjects(
+                {
+                    query: searchTerm!,
+                    departmentId: departmentId ?? undefined,
+                    dateBegin: yearFrom ?? undefined,
+                    dateEnd: yearTo ?? undefined,
+                    hasImages: true,
+                },
+                {signal},
+            ),
         enabled: artwork != null && searchTerm != null,
         staleTime: artworkQueryOptions.staleTime,
         gcTime: artworkQueryOptions.gcTime,
