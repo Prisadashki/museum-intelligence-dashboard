@@ -8,7 +8,12 @@ import {SearchField, DepartmentSelect, DateRangeFilter, FilterCheckbox} from './
 
 export const GalleryFilters = memo(function GalleryFilters() {
     const {filters, setFilters, resetFilters} = useGalleryFilters();
-    const {data: departments, isLoading: isDepartmentsLoading} = useDepartments();
+    const {
+        data: departments,
+        isLoading: isDepartmentsLoading,
+        isError: isDepartmentsError,
+        refetch: refetchDepartments,
+    } = useDepartments();
 
     const handleQueryChange = useCallback((value: string) => setFilters({query: value}), [setFilters]);
 
@@ -31,6 +36,10 @@ export const GalleryFilters = memo(function GalleryFilters() {
         [setFilters],
     );
 
+    const handleRetryDepartments = useCallback(() => {
+        refetchDepartments();
+    }, [refetchDepartments]);
+
     const hasActiveFilters =
         filters.query !== '' ||
         filters.departmentId != null ||
@@ -49,6 +58,8 @@ export const GalleryFilters = memo(function GalleryFilters() {
                     onChange={handleDepartmentChange}
                     departments={departments}
                     isLoading={isDepartmentsLoading}
+                    isError={isDepartmentsError}
+                    onRetry={handleRetryDepartments}
                 />
 
                 <DateRangeFilter
