@@ -41,7 +41,11 @@ export const Header = memo(function Header() {
 
                     <Box sx={{flexGrow: 1}} />
 
-                    <Box component='nav' sx={{display: 'flex', alignItems: 'center', gap: 3}}>
+                    <Box
+                        component='nav'
+                        aria-label='Main navigation'
+                        sx={{display: 'flex', alignItems: 'center', gap: 3}}
+                    >
                         <Link
                             component={RouterLink}
                             to='/gallery'
@@ -57,6 +61,7 @@ export const Header = memo(function Header() {
                         <Link
                             component={RouterLink}
                             to='/collected'
+                            aria-label={`Collected artworks (${collectedCount})`}
                             sx={{
                                 display: 'flex',
                                 alignItems: 'center',

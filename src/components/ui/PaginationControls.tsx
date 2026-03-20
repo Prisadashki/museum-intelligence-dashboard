@@ -26,6 +26,8 @@ export const PaginationControls = memo(function PaginationControls({
 
     return (
         <Box
+            component='nav'
+            aria-label='Pagination'
             sx={{
                 display: 'flex',
                 flexDirection: 'column',
@@ -48,8 +50,19 @@ export const PaginationControls = memo(function PaginationControls({
                 // On desktop: show 1 sibling on each side + 1 boundary page
                 siblingCount={isMobile ? 0 : 1}
                 boundaryCount={isMobile ? 0 : 1}
+                aria-label={`Page ${page + 1} of ${totalPages}`}
+                getItemAriaLabel={(type, pageNum, selected) => {
+                    if (type === 'page') {
+                        return selected ? `Page ${pageNum}, current page` : `Go to page ${pageNum}`;
+                    }
+                    if (type === 'first') return 'Go to first page';
+                    if (type === 'last') return 'Go to last page';
+                    if (type === 'next') return 'Go to next page';
+                    if (type === 'previous') return 'Go to previous page';
+                    return '';
+                }}
             />
-            <Typography variant='caption' color='text.secondary'>
+            <Typography variant='caption' color='text.secondary' aria-live='polite'>
                 Page {page + 1} of {totalPages.toLocaleString()}
             </Typography>
         </Box>
