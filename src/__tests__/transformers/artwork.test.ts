@@ -15,7 +15,6 @@ describe('transformRawObject', () => {
             yearEnd: 1682,
             dateDisplay: 'late 17th century',
             department: 'Asian Art',
-            departmentId: 0,
             imageSmall: 'https://images.metmuseum.org/CRDImages/as/web-large/DP251139.jpg',
             imageLarge: 'https://images.metmuseum.org/CRDImages/as/original/DP251139.jpg',
             medium: 'Hanging scroll; ink and color on silk',

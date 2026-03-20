@@ -43,7 +43,6 @@ const baseArtwork: Artwork = {
     yearEnd: 1510,
     dateDisplay: 'ca. 1500',
     department: 'Asian Art',
-    departmentId: 6,
     imageSmall: 'https://example.com/small.jpg',
     imageLarge: 'https://example.com/large.jpg',
     medium: 'Oil on canvas',

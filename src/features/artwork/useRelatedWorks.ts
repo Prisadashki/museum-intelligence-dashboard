@@ -3,7 +3,8 @@ import {searchObjects} from '@/api/endpoints';
 import {useDepartments} from '@/hooks/useDepartments';
 import {usePaginatedArtworks} from '@/hooks/usePaginatedArtworks';
 import {findDepartmentId} from '@/utils/departments';
-import {RELATED_WORKS_COUNT, RELATED_WORKS_YEAR_RANGE, ARTWORK_STALE_TIME, ARTWORK_GC_TIME} from '@/utils/constants';
+import {RELATED_WORKS_COUNT, RELATED_WORKS_YEAR_RANGE} from '@/utils/constants';
+import {artworkQueryOptions} from '@/utils/queryConfig';
 import type {Artwork} from '@/types/artwork';
 
 export function useRelatedWorks(artwork: Artwork | undefined) {
@@ -32,8 +33,8 @@ export function useRelatedWorks(artwork: Artwork | undefined) {
                 hasImages: true,
             }),
         enabled: artwork != null && searchTerm != null,
-        staleTime: ARTWORK_STALE_TIME,
-        gcTime: ARTWORK_GC_TIME,
+        staleTime: artworkQueryOptions.staleTime,
+        gcTime: artworkQueryOptions.gcTime,
     });
 
     // Step 3: Take first N IDs, excluding current artwork

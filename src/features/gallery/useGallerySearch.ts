@@ -2,9 +2,18 @@ import {useEffect, useMemo} from 'react';
 import {useQuery, useQueries, useQueryClient} from '@tanstack/react-query';
 import {searchObjects, getObject} from '@/api/endpoints';
 import {transformRawObject} from '@/transformers/artwork';
-import {PAGE_SIZE, DEFAULT_STALE_TIME, ARTWORK_STALE_TIME, SEARCH_GC_TIME, ARTWORK_GC_TIME} from '@/utils/constants';
-import {isSkippableError, isNotFoundError, isForbiddenError} from '@/utils/errors';
-import type {GalleryFilters, ArtworkSlot} from '@/types/artwork';
+import {
+    PAGE_SIZE,
+    DEFAULT_STALE_TIME,
+    ARTWORK_STALE_TIME,
+    SEARCH_GC_TIME,
+    ARTWORK_GC_TIME,
+    EARLIEST_DATE,
+    CURRENT_YEAR,
+} from '@/utils/constants';
+import {artworkRetry} from '@/utils/queryConfig';
+import {mapQueriesToArtworkSlots} from '@/utils/artworkSlots';
+import type {GalleryFilters} from '@/types/artwork';
 
 /**
  * Creates a stable string key from filters for comparison.
@@ -18,11 +27,6 @@ interface UseGallerySearchParams {
     filters: GalleryFilters;
     page: number;
 }
-
-// The Met API requires BOTH dateBegin AND dateEnd for date filtering to work.
-// If only one is provided, the API seems to ignore it entirely.
-const EARLIEST_DATE = -10000; // Very old date for "beginning of time"
-const CURRENT_YEAR = new Date().getFullYear();
 
 /**
  * Search result with embedded filters key for staleness detection.
@@ -130,11 +134,7 @@ export function useGallerySearch({filters, page}: UseGallerySearchParams) {
             },
             staleTime: ARTWORK_STALE_TIME,
             gcTime: ARTWORK_GC_TIME,
-            // Don't retry 404s or 403s - these are definitive responses
-            retry: (failureCount: number, error: unknown) => {
-                if (isSkippableError(error)) return false;
-                return failureCount < 2;
-            },
+            retry: artworkRetry,
         })),
     });
 
@@ -170,18 +170,8 @@ export function useGallerySearch({filters, page}: UseGallerySearchParams) {
     // Derive return values — map each query to an ArtworkSlot so the UI can
     // render unavailable (404) and restricted (403) cards instead of hiding them.
     // Use artworkIdsToFetch to ensure we're mapping the correct IDs.
-    const artworkSlots = useMemo<ArtworkSlot[]>(
-        () =>
-            artworkQueries.map((q, index) => {
-                const id = artworkIdsToFetch[index]!;
-                if (q.isLoading) return {status: 'loading' as const, id};
-                if (q.data) return {status: 'loaded' as const, artwork: q.data};
-                if (q.error && isNotFoundError(q.error)) return {status: 'unavailable' as const, id};
-                if (q.error && isForbiddenError(q.error)) return {status: 'restricted' as const, id};
-                // For any other error, treat as unavailable
-                if (q.error) return {status: 'unavailable' as const, id};
-                return {status: 'loading' as const, id};
-            }),
+    const artworkSlots = useMemo(
+        () => mapQueriesToArtworkSlots(artworkQueries, artworkIdsToFetch),
         [artworkQueries, artworkIdsToFetch],
     );
 

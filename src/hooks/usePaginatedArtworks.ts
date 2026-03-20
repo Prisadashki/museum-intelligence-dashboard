@@ -1,7 +1,7 @@
 import {useQueries} from '@tanstack/react-query';
 import {getObject} from '@/api/endpoints';
 import {transformRawObject} from '@/transformers/artwork';
-import {ARTWORK_STALE_TIME, ARTWORK_GC_TIME} from '@/utils/constants';
+import {artworkQueryOptions} from '@/utils/queryConfig';
 import {isSkippableError} from '@/utils/errors';
 import type {Artwork} from '@/types/artwork';
 
@@ -18,14 +18,8 @@ export function usePaginatedArtworks({objectIds, enabled = true}: UsePaginatedAr
                 const raw = await getObject(id);
                 return transformRawObject(raw);
             },
-            staleTime: ARTWORK_STALE_TIME,
-            gcTime: ARTWORK_GC_TIME,
             enabled,
-            // Don't retry 404s - the artwork doesn't exist
-            retry: (failureCount: number, error: unknown) => {
-                if (isSkippableError(error)) return false;
-                return failureCount < 2;
-            },
+            ...artworkQueryOptions,
         })),
     });
 

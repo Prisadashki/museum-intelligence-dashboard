@@ -3,9 +3,9 @@ import {useQueries} from '@tanstack/react-query';
 import {getObject} from '@/api/endpoints';
 import {transformRawObject} from '@/transformers/artwork';
 import {useCollectedStore} from '@/store/collectedStore';
-import {ARTWORK_STALE_TIME, ARTWORK_GC_TIME} from '@/utils/constants';
-import {isSkippableError, isNotFoundError, isForbiddenError} from '@/utils/errors';
-import type {ArtworkSlot} from '@/types/artwork';
+import {artworkQueryOptions} from '@/utils/queryConfig';
+import {mapQueriesToArtworkSlots} from '@/utils/artworkSlots';
+import {isSkippableError} from '@/utils/errors';
 
 /**
  * Fetches all collected artworks by their IDs.
@@ -25,27 +25,12 @@ export function useCollectedArtworks() {
                 const raw = await getObject(id);
                 return transformRawObject(raw);
             },
-            staleTime: ARTWORK_STALE_TIME,
-            gcTime: ARTWORK_GC_TIME,
-            // Don't retry 404s - the artwork doesn't exist
-            retry: (failureCount: number, error: unknown) => {
-                if (isSkippableError(error)) return false;
-                return failureCount < 2;
-            },
+            ...artworkQueryOptions,
         })),
     });
 
-    const artworkSlots = useMemo<ArtworkSlot[]>(
-        () =>
-            artworkQueries.map((q, index) => {
-                const id = collectedIds[index]!;
-                if (q.isLoading) return {status: 'loading' as const, id};
-                if (q.data) return {status: 'loaded' as const, artwork: q.data};
-                if (q.error && isNotFoundError(q.error)) return {status: 'unavailable' as const, id};
-                if (q.error && isForbiddenError(q.error)) return {status: 'restricted' as const, id};
-                if (q.error) return {status: 'unavailable' as const, id};
-                return {status: 'loading' as const, id};
-            }),
+    const artworkSlots = useMemo(
+        () => mapQueriesToArtworkSlots(artworkQueries, collectedIds),
         [artworkQueries, collectedIds],
     );
 

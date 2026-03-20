@@ -13,7 +13,6 @@ export function transformRawObject(raw: RawMetObject): Artwork {
         yearEnd: raw.objectEndDate !== 0 ? raw.objectEndDate : null,
         dateDisplay: emptyToNull(raw.objectDate),
         department: raw.department || 'Unknown Department',
-        departmentId: 0,
         imageSmall: emptyToNull(raw.primaryImageSmall),
         imageLarge: emptyToNull(raw.primaryImage),
         medium: emptyToNull(raw.medium),

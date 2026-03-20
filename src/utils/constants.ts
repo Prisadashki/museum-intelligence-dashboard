@@ -14,3 +14,8 @@ export const DEPARTMENTS_STALE_TIME = 30 * 60 * 1000;
 export const SEARCH_GC_TIME = 30 * 60 * 1000; // 30 min
 export const ARTWORK_GC_TIME = 30 * 60 * 1000; // 30 min
 export const DEPARTMENTS_GC_TIME = 60 * 60 * 1000; // 60 min
+
+// The Met API requires BOTH dateBegin AND dateEnd for date filtering to work.
+// If only one is provided, the API ignores the filter entirely.
+export const EARLIEST_DATE = -10000; // Very old date for "beginning of time"
+export const CURRENT_YEAR = new Date().getFullYear();

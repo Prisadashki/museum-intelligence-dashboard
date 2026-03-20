@@ -1,4 +1,4 @@
-import {useState, useEffect, useCallback, useRef} from 'react';
+import {useCallback} from 'react';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
@@ -11,47 +11,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
 import {useDepartments} from '@/hooks/useDepartments';
 import {useGalleryFilters} from '@/hooks/useGalleryFilters';
-
-const DEBOUNCE_MS = 400;
-
-/**
- * Custom hook for debounced input.
- * Input changes are committed to external state after debounce.
- * External state changes are synced back to local input (e.g., browser back/forward).
- */
-function useDebouncedInput(externalValue: string, onCommit: (value: string) => void, debounceMs: number = DEBOUNCE_MS) {
-    const [localValue, setLocalValue] = useState(externalValue);
-    // Track the last value we committed to know if external changes came from us
-    const lastCommittedRef = useRef(externalValue);
-
-    // Sync external changes back to local state (e.g., browser navigation, reset).
-    // This is a legitimate use of setState in an effect: we're synchronizing with
-    // an external source (URL/router state) that changed independently.
-    useEffect(() => {
-        // Only sync if external value changed AND it wasn't from our commit
-        if (externalValue !== localValue && externalValue !== lastCommittedRef.current) {
-            // eslint-disable-next-line react-hooks/set-state-in-effect -- Syncing with external URL state (browser navigation)
-            setLocalValue(externalValue);
-            lastCommittedRef.current = externalValue;
-        }
-    }, [externalValue, localValue]);
-
-    // Debounced commit to external state
-    useEffect(() => {
-        if (localValue === externalValue) {
-            return;
-        }
-
-        const timer = setTimeout(() => {
-            lastCommittedRef.current = localValue;
-            onCommit(localValue);
-        }, debounceMs);
-
-        return () => clearTimeout(timer);
-    }, [localValue, externalValue, onCommit, debounceMs]);
-
-    return [localValue, setLocalValue] as const;
-}
+import {useDebouncedInput} from '@/hooks/useDebouncedInput';
 
 export function GalleryFilters() {
     const {filters, setFilters, resetFilters} = useGalleryFilters();

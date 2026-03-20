@@ -10,7 +10,6 @@ export interface Artwork {
     yearEnd: number | null;
     dateDisplay: string | null;
     department: string;
-    departmentId: number;
     imageSmall: string | null;
     imageLarge: string | null;
     medium: string | null;
