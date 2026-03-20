@@ -47,7 +47,7 @@ export const ArtworkGrid = memo(function ArtworkGrid({slots, isLoading}: Artwork
                 const key = slot.status === 'loaded' ? slot.artwork.id : slot.id;
 
                 return (
-                    <Grid size={{xs: 12, sm: 6, md: 4, lg: 3}} key={key}>
+                    <Grid size={{xs: 12, md: 4}} key={key}>
                         {slot.status === 'loaded' ? (
                             <ArtworkCard artwork={slot.artwork} />
                         ) : slot.status === 'unavailable' ? (

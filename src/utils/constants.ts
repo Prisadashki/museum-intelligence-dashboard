@@ -2,7 +2,7 @@
 // In dev: Vite proxy handles /api → Met API
 // In prod: Vercel Edge Function handles /api → Met API
 export const API_BASE_URL = '/api';
-export const PAGE_SIZE = 10;
+export const PAGE_SIZE = 9;
 export const RELATED_WORKS_COUNT = 10;
 export const RELATED_WORKS_YEAR_RANGE = 50;
 export const DEFAULT_STALE_TIME = 5 * 60 * 1000;

@@ -86,8 +86,8 @@ describe('useGallerySearch', () => {
 
     it('returns hasNextPage=false when all IDs are fetched', async () => {
         const smallResponse = {
-            total: 10,
-            objectIDs: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+            total: 9,
+            objectIDs: [1, 2, 3, 4, 5, 6, 7, 8, 9],
         };
         mockSearchObjects.mockResolvedValue(smallResponse);
         mockGetObject.mockResolvedValue(validRawObject);
@@ -105,7 +105,7 @@ describe('useGallerySearch', () => {
             expect(result.current.isSearching).toBe(false);
         });
 
-        // 10 total, page 0 shows up to 20, so hasNextPage should be false
+        // 9 total fits on one page (PAGE_SIZE=9), so hasNextPage should be false
         expect(result.current.hasNextPage).toBe(false);
     });
 
