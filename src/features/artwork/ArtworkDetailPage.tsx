@@ -40,11 +40,9 @@ export function ArtworkDetailPage() {
     const parsedId = objectId ? parseInt(objectId, 10) : 0;
 
     const {data: artwork, isLoading, error, refetch} = useArtwork(parsedId);
-    // Select the Set directly so component re-renders when it changes
-    const collectedIds = useCollectedStore((s) => s.collectedIds);
+    // Select only the boolean for this specific artwork to avoid unnecessary re-renders
+    const collected = useCollectedStore((s) => s.collectedIds.has(parsedId));
     const toggleCollected = useCollectedStore((s) => s.toggleCollected);
-
-    const collected = artwork ? collectedIds.has(artwork.id) : false;
 
     return (
         <Layout>
